@@ -5,11 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Telefon Kamerası Yayını</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
     video {
       width: 100%;
       max-width: 500px;
@@ -24,31 +19,30 @@
   <script>
     const videoElement = document.getElementById('video');
 
-    // Telefonun kamerasına erişim sağla
+    // Telefon kamerasına erişim sağla
     navigator.mediaDevices.getUserMedia({ video: true })
       .then(stream => {
         // Kamera akışını video elementine ata
         videoElement.srcObject = stream;
 
-        // WebRTC için peer bağlantısı oluştur
+        // WebRTC bağlantısını kur
         const peerConnection = new RTCPeerConnection();
 
         // Kamera akışını WebRTC'ye ekle
         stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
 
-        // Bilgisayar ile WebRTC bağlantısını kur
+        // Offer (teklif) oluştur
         peerConnection.createOffer()
           .then(offer => peerConnection.setLocalDescription(offer))
           .then(() => {
-            // WebRTC sinyali bilgisayara gönderilecek
-            // Burada sinyal göndermek için bir WebSocket ya da başka bir yöntem kullanabilirsin
-            console.log("WebRTC Offer gönderildi.");
+            // Offer'ı diğer tarafa gönder
+            alert("Offer mesajı oluşturuldu. Lütfen bilgisayar tarafına kopyalayıp yapıştırın.");
+            console.log("Offer mesajı: ", peerConnection.localDescription);
           });
 
-        peerConnection.onicecandidate = event => {
+        peerConnection.onicecandidate = (event) => {
           if (event.candidate) {
             console.log("ICE Candidate: ", event.candidate);
-            // ICE Candidate bilgisini bilgisayara gönderebilirsin
           }
         };
       })
@@ -59,4 +53,5 @@
   </script>
 </body>
 </html>
+
 
