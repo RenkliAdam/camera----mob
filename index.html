@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telefon Kamerası Yayını</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    video {
+      width: 100%;
+      max-width: 500px;
+      border: 2px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <h1>Telefon Kamerası</h1>
+  <video id="video" autoplay></video>
+
+  <script>
+    const video = document.getElementById('video');
+
+    // Telefon kamerasına erişim
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((stream) => {
+        video.srcObject = stream;
+        // WebSocket'e video akışını iletecek kodu buraya ekle
+      })
+      .catch(err => {
+        console.error('Kamera hatası: ', err);
+        alert('Telefon kameranıza erişim sağlanamadı!');
+      });
+  </script>
+</body>
+</html>
