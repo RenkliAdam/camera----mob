@@ -18,17 +18,39 @@
   </style>
 </head>
 <body>
-  <h1>Telefon Kamerası</h1>
+  <h1>Telefon Kamerası Yayını</h1>
   <video id="video" autoplay></video>
 
   <script>
-    const video = document.getElementById('video');
+    const videoElement = document.getElementById('video');
 
-    // Telefon kamerasına erişim
+    // Telefonun kamerasına erişim sağla
     navigator.mediaDevices.getUserMedia({ video: true })
-      .then((stream) => {
-        video.srcObject = stream;
-        // WebSocket'e video akışını iletecek kodu buraya ekle
+      .then(stream => {
+        // Kamera akışını video elementine ata
+        videoElement.srcObject = stream;
+
+        // WebRTC için peer bağlantısı oluştur
+        const peerConnection = new RTCPeerConnection();
+
+        // Kamera akışını WebRTC'ye ekle
+        stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+
+        // Bilgisayar ile WebRTC bağlantısını kur
+        peerConnection.createOffer()
+          .then(offer => peerConnection.setLocalDescription(offer))
+          .then(() => {
+            // WebRTC sinyali bilgisayara gönderilecek
+            // Burada sinyal göndermek için bir WebSocket ya da başka bir yöntem kullanabilirsin
+            console.log("WebRTC Offer gönderildi.");
+          });
+
+        peerConnection.onicecandidate = event => {
+          if (event.candidate) {
+            console.log("ICE Candidate: ", event.candidate);
+            // ICE Candidate bilgisini bilgisayara gönderebilirsin
+          }
+        };
       })
       .catch(err => {
         console.error('Kamera hatası: ', err);
@@ -37,3 +59,4 @@
   </script>
 </body>
 </html>
+
